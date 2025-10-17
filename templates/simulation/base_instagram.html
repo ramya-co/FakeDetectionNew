@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Instagram{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDIuMTYzQzE1LjIwNCAyLjE2MyAxNS41ODQgMi4xNzUgMTYuODUgMi4yMzNDMTguMTAyIDIuMjkgMTguNzEgMi4yOTMgMTkuMDc3IDIuNzY0QzE5LjQzOCAzLjIzNyAxOS40MzggMy44MjggMTkuNTggNS4wNzZWMTguOTI0QzE5LjQzOCAyMC4xNzIgMTkuNDM4IDIwLjc2MyAxOS4wNzcgMjEuMjM2QzE4LjcxIDIxLjcwNyAxOC4xMDIgMjEuNzEgMTYuODUgMjEuNzY3QzE1LjU4NCAyMS44MjUgMTUuMjA0IDIxLjgzNyAxMiAyMS44MzdDOC43OTYgMjEuODM3IDguNDE2IDIxLjgyNSA3LjE1IDIxLjc2N0M1Ljg5OCAyMS43MSA1LjI5IDIxLjcwNyA0LjkyMyAyMS4yMzZDNC41NjIgMjAuNzYzIDQuNTYyIDIwLjE3MiA0LjQyIDE4LjkyNFY1LjA3NkM0LjU2MiAzLjgyOCA0LjU2MiAzLjIzNyA0LjkyMyAyLjc2NEM1LjI5IDIuMjkzIDUuODk4IDIuMjkgNy4xNSAyLjIzM0M4LjQxNiAyLjE3NSA4Ljc5NiAyLjE2MyAxMiAyLjE2M1pNMTIgMEM4LjcxNyAwIDguMzMzIDAuMDE0IDcuMDUzIDAuMDc0QzUuNzc1IDAuMTM0IDQuNzMxIDAuMzMzIDMuODMyIDAuNjNDMi45MTYgMC45MzIgMi4xMzQgMS4zNDcgMS40NjkgMi4wMTNDMC44MDQgMi42NzggMC4zODkgMy40NiAwLjA4NyA0LjM3NkMtMC4yMDkgNS4yNzQgLTAuMDEgNi4zMTggMC4wNSA3LjU5NkMwLjExIDguODc2IDAuMTI0IDkuMjYgMC4xMjQgMTIuNTQzQzAuMTI0IDE1LjgyNiAwLjExIDE2LjIxIDAuMDUgMTcuNDlDLTAuMDEgMTguNzY4IC0wLjIwOSAxOS44MTIgMC4wODcgMjAuNzFDMC4zODkgMjEuNjI2IDAuODA0IDIyLjQwOCAxLjQ2OSAyMy4wNzNDMi4xMzQgMjMuNzM4IDIuOTE2IDI0LjE1MyAzLjgzMiAyNC40NTVDNC43MzEgMjQuNzUyIDUuNzc1IDI0Ljk1MSA3LjA1MyAyNS4wMTFDOC4zMzMgMjUuMDcxIDguNzE3IDI1LjA4NSAxMiAyNS4wODVDMTUuMjgzIDI1LjA4NSAxNS42NjcgMjUuMDcxIDE2Ljk0NyAyNS4wMTFDMTguMjI1IDI0Ljk1MSAxOS4yNjkgMjQuNzUyIDIwLjE2OCAyNC40NTVDMjEuMDg0IDI0LjE1MyAyMS44NjYgMjMuNzM4IDIyLjUzMSAyMy4wNzNDMjMuMTk2IDIyLjQwOCAyMy42MTEgMjEuNjI2IDIzLjkxMyAyMC43MUMyNC4yMDkgMTkuODEyIDI0LjAxIDE4Ljc2OCAyMy45NSAxNy40OUMyMy44OSAxNi4yMSAyMy44NzYgMTUuODI2IDIzLjg3NiAxMi41NDNDMjMuODc2IDkuMjYgMjMuODkgOC44NzYgMjMuOTUgNy41OTZDMjQuMDEgNi4zMTggMjQuMjA5IDUuMjc0IDIzLjkxMyA0LjM3NkMyMy42MTEgMy40NiAyMy4xOTYgMi42NzggMjIuNTMxIDIuMDEzQzIxLjg2NiAxLjM0NyAyMS4wODQgMC45MzIgMjAuMTY4IDAuNjNDMTkuMjY5IDAuMzMzIDE4LjIyNSAwLjEzNCAxNi45NDcgMC4wNzRDMTUuNjY3IDAuMDE0IDE1LjI4MyAwIDEyIDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9yYWRpYWxfODdfNzEyNCkiLz4KPC9zdmc+Cg==">
+    
+    <!-- Instagram-accurate fonts -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .instagram-container {
+            max-width: 935px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

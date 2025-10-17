@@ -1,0 +1,461 @@
+Successfully engineered features
+Model file not found: /Users/happyfox/Desktop/fake_account_detection/ml_model/instagram_model.json
+Error loading model artifacts: Model file not found: /Users/happyfox/Desktop/fake_account_detection/ml_model/instagram_model.json
+Error in process_analysis: Model file not found: /Users/happyfox/Desktop/fake_account_detection/ml_model/instagram_model.json
+[2025-10-08 04:10:46] Analysis failed - Username: aliaabhatt, Method: manual, Error: Analysis failed: Model file not found: /Users/happyfox/Desktop/fake_account_detection/ml_model/instagram_model.json
+Successfully loaded XGBoost model
+Successfully loaded scaler
+Successfully loaded feature names
+Successfully initialized SHAP explainer
+Successfully engineered features
+Successfully loaded XGBoost model
+Successfully loaded scaler
+Successfully loaded feature names
+Successfully initialized SHAP explainer
+Generated SHAP explanation with 5 top features
+Prediction: Real (confidence: 0.999)
+Successfully engineered features
+Successfully loaded XGBoost model
+Successfully loaded scaler
+Successfully loaded feature names
+Successfully initialized SHAP explainer
+Generated SHAP explanation with 5 top features
+Prediction: Real (confidence: 0.999)
+[2025-10-08 04:17:44] Analysis successful - Username: aliaabhatt, Method: manual
+Starting to scrape profile: aliaabhatt
+Error scraping profile aliaabhatt: 'Instaloader' object has no attribute 'get_profile'
+[2025-10-08 04:19:37] Analysis failed - Username: aliaabhatt, Method: scraped, Error: Scraping failed
+Successfully engineered features
+Error in process_analysis: 'InstagramPredictor' object has no attribute 'is_model_loaded'
+[2025-10-08 04:21:33] Analysis failed - Username: aliaabhatt, Method: manual, Error: Analysis failed: 'InstagramPredictor' object has no attribute 'is_model_loaded'
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9963
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9963
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9963
+[2025-10-08 04:24:56] Analysis successful - Username: aliaabhatt, Method: manual
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.8671
+[2025-10-08 04:25:53] Analysis successful - Username: not.ram.ffs, Method: manual
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9978
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.8671
+[2025-10-08 04:29:22] Analysis successful - Username: not.ram.ffs, Method: manual
+Starting to scrape profile: katrinakaif
+Error scraping profile katrinakaif: 'Instaloader' object has no attribute 'get_profile'
+[2025-10-08 04:31:15] Analysis failed - Username: katrinakaif, Method: scraped, Error: Scraping failed
+Starting multi-method scraping for: katrinakaif
+Trying Web Scraping (Direct) for katrinakaif
+✅ Successfully scraped katrinakaif using Web Scraping (Direct)
+Starting multi-method scraping for: katrinakaif
+Trying Web Scraping (Direct) for katrinakaif
+Direct scraping: https://www.instagram.com/katrinakaif/
+Using fallback method for katrinakaif
+Found bio in meta: 80M Followers, 606 Following, 1,144 Posts - Katrin...
+Extracted: followers=0, following=0, posts=0
+✅ Successfully scraped katrinakaif using Web Scraping (Direct)
+Starting multi-method scraping for: katrinakaif
+Trying Web Scraping (Direct) for katrinakaif
+Direct scraping: https://www.instagram.com/katrinakaif/
+Using fallback method for katrinakaif
+Found bio in meta: 80M Followers, 606 Following, 1,144 Posts - Katrin...
+Extracted: followers=0, following=0, posts=0
+✅ Successfully scraped katrinakaif using Web Scraping (Direct)
+Starting multi-method scraping for: katrinakaif
+Trying Web Scraping (Direct) for katrinakaif
+Direct scraping: https://www.instagram.com/katrinakaif/
+Using fallback method for katrinakaif
+Found bio in meta: 80M Followers, 606 Following, 1,144 Posts - Katrin...
+Extracted: followers=0, following=0, posts=0
+✅ Successfully scraped katrinakaif using Web Scraping (Direct)
+Starting multi-method scraping for: katrinakaif
+Trying Web Scraping (Direct) for katrinakaif
+Direct scraping: https://www.instagram.com/katrinakaif/
+Using fallback method for katrinakaif
+Found bio in meta: 80M Followers, 606 Following, 1,144 Posts - Katrin...
+Parsing meta content: 80M Followers, 606 Following, 1,144 Posts - Katrina Kaif (@katrinakaif) on Instagram: "Kay Beauty 💄@kaybykatrina"
+Found followers: 80000000 from meta
+Found following: 606 from meta
+Found posts: 1144 from meta
+Extracted: followers=80000000, following=606, posts=1144
+✅ Successfully scraped katrinakaif using Web Scraping (Direct)
+Starting multi-method scraping for: cristiano
+Trying Web Scraping (Direct) for cristiano
+Direct scraping: https://www.instagram.com/cristiano/
+Using fallback method for cristiano
+Found bio in meta: 666M Followers, 627 Following, 3,946 Posts - Crist...
+Parsing meta content: 666M Followers, 627 Following, 3,946 Posts - Cristiano Ronaldo (@cristiano) on Instagram: "SIUUUbscribe to my Youtube Channel!"
+Found followers: 666000000 from meta
+Found following: 627 from meta
+Found posts: 3946 from meta
+Extracted: followers=666000000, following=627, posts=3946
+✅ Successfully scraped cristiano using Web Scraping (Direct)
+Starting multi-method scraping for: natgeo
+Trying Web Scraping (Direct) for natgeo
+Direct scraping: https://www.instagram.com/natgeo/
+Using fallback method for natgeo
+Found bio in meta: 277M Followers, 173 Following, 31K Posts - Nationa...
+Parsing meta content: 277M Followers, 173 Following, 31K Posts - National Geographic (@natgeo) on Instagram: "Inspiring the explorer in everyone 🌎"
+Found followers: 277000000 from meta
+Found following: 173 from meta
+Found posts: 31000 from meta
+Extracted: followers=277000000, following=173, posts=31000
+✅ Successfully scraped natgeo using Web Scraping (Direct)
+Starting multi-method scraping for: abraham._.samuel
+Trying Web Scraping (Direct) for abraham._.samuel
+Direct scraping: https://www.instagram.com/abraham._.samuel/
+Using fallback method for abraham._.samuel
+Found bio in meta: 580 Followers, 1,342 Following, 3 Posts - Samuel (...
+Parsing meta content: 580 Followers, 1,342 Following, 3 Posts - Samuel (@abraham._.samuel) on Instagram: "Rec'26
+Oxfordian'22
+Dev¿! 🦊"
+Found followers: 580 from meta
+Found following: 1342 from meta
+Found posts: 3 from meta
+Extracted: followers=580, following=1342, posts=3
+✅ Successfully scraped abraham._.samuel using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.7197
+[2025-10-08 05:00:10] Analysis successful - Username: abraham._.samuel, Method: scraped
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 251 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 251 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 251 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=251, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-08 05:02:55] Analysis successful - Username: pujakumaravelu, Method: scraped
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.6685
+[2025-10-08 05:07:05] Analysis successful - Username: pujakumaravelu, Method: manual
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 251 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 251 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 251 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=251, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-08 05:07:31] Analysis successful - Username: pujakumaravelu, Method: scraped
+Running prediction for user not.ram.ffs
+ML model not loaded
+Error getting user detail for 1: simulation/user_detail.html
+Error in check_and_predict for user abraham: Field 'id' expected a number but got <SimulatedUser: abraham>.
+Error getting user detail for 1: simulation/user_detail.html
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 251 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 251 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 251 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=251, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-08 08:00:52] Analysis successful - Username: pujakumaravelu, Method: scraped
+Error in check_and_predict for user pujjjjj: Field 'id' expected a number but got <SimulatedUser: pujjjjj>.
+Running prediction for user pujjjjj
+ML model not loaded
+Running prediction for user pujjjjj
+ML model not loaded
+Running prediction for user pujjjjj
+ML model not loaded
+Running prediction for user not.ram.ffs
+ML model not loaded
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9905
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Running prediction for user photography_pro
+Prediction: Fake, Confidence: 0.9824
+Prediction saved for photography_pro: Fake (1.0%)
+Running prediction for user pujjjjj
+Prediction: Fake, Confidence: 0.9697
+Prediction saved for pujjjjj: Fake (1.0%)
+Running prediction for user puja
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for puja: Fake (1.0%)
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Running prediction for user abraham
+Prediction: Fake, Confidence: 0.9627
+Prediction saved for abraham: Fake (1.0%)
+Running prediction for user vishal
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for vishal: Fake (1.0%)
+Running prediction for user vish
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for vish: Fake (1.0%)
+Running prediction for user ramya
+Prediction: Fake, Confidence: 0.9957
+Prediction saved for ramya: Fake (1.0%)
+Running prediction for user aliaabhatt
+Prediction: Fake, Confidence: 0.9959
+Prediction saved for aliaabhatt: Fake (1.0%)
+Running prediction for user not.ram.ffs
+Prediction: Fake, Confidence: 0.9627
+Prediction saved for not.ram.ffs: Fake (1.0%)
+Error getting user detail for 8: simulation/user_detail.html
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Running prediction for user photography_pro
+Prediction: Fake, Confidence: 0.9824
+Prediction saved for photography_pro: Fake (98.2%)
+Running prediction for user pujjjjj
+Prediction: Fake, Confidence: 0.9697
+Prediction saved for pujjjjj: Fake (97.0%)
+Running prediction for user puja
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for puja: Fake (99.5%)
+Running prediction for user abraham
+Prediction: Fake, Confidence: 0.9627
+Prediction saved for abraham: Fake (96.3%)
+Running prediction for user vishal
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for vishal: Fake (99.5%)
+Running prediction for user vish
+Prediction: Fake, Confidence: 0.9953
+Prediction saved for vish: Fake (99.5%)
+Running prediction for user ramya
+Prediction: Fake, Confidence: 0.9957
+Prediction saved for ramya: Fake (99.6%)
+Running prediction for user aliaabhatt
+Prediction: Fake, Confidence: 0.9959
+Prediction saved for aliaabhatt: Fake (99.6%)
+Running prediction for user not.ram.ffs
+Prediction: Fake, Confidence: 0.9627
+Prediction saved for not.ram.ffs: Fake (96.3%)
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.8830
+[2025-10-09 11:10:53] Analysis successful - Username: abraham._.samuel, Method: manual
+Starting multi-method scraping for: abraham._.samuel
+Trying Web Scraping (Direct) for abraham._.samuel
+Direct scraping: https://www.instagram.com/abraham._.samuel/
+Using fallback method for abraham._.samuel
+Found bio in meta: 580 Followers, 1,343 Following, 3 Posts - Samuel (...
+Parsing meta content: 580 Followers, 1,343 Following, 3 Posts - Samuel (@abraham._.samuel) on Instagram: "Rec'26
+Oxfordian'22
+Dev¿! 🦊"
+Found followers: 580 from meta
+Found following: 1343 from meta
+Found posts: 3 from meta
+Extracted: followers=580, following=1343, posts=3
+✅ Successfully scraped abraham._.samuel using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.7197
+[2025-10-09 11:11:28] Analysis successful - Username: abraham._.samuel, Method: scraped
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Error getting user detail for 10: simulation/user_detail.html
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.6685
+[2025-10-10 02:10:57] Analysis successful - Username: pujakumaravelu, Method: manual
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 247 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 247 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 247 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=247, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-10 02:12:45] Analysis successful - Username: pujakumaravelu, Method: scraped
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 247 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 247 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 247 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=247, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-10 02:12:54] Analysis successful - Username: pujakumaravelu, Method: scraped
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 247 Followers, 272 Following, 26 Posts - Puja (@pu...
+Parsing meta content: 247 Followers, 272 Following, 26 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 247 from meta
+Found following: 272 from meta
+Found posts: 26 from meta
+Extracted: followers=247, following=272, posts=26
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+XGBoost model loaded successfully
+Scaler loaded successfully
+Feature names loaded successfully
+SHAP explainer initialized successfully
+Prediction: Real, Confidence: 0.9938
+[2025-10-10 03:17:21] Analysis successful - Username: pujakumaravelu, Method: scraped

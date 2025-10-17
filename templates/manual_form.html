@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manual Input - Instagram Fake Account Detection{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-keyboard me-2"></i>
+                    Manual Input Analysis
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">
+                    Enter the Instagram account details manually. All fields are required for accurate analysis.
+                </p>
+
+                <form method="post" id="manualForm" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Username -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fab fa-instagram me-1"></i>
+                                Username
+                            </label>
+                            {{ form.username }}
+                            <div class="form-text">{{ form.username.help_text }}</div>
+                            {% if form.username.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Bio Length -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.bio_length.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>
+                                Bio Length
+                            </label>
+                            {{ form.bio_length }}
+                            <div class="form-text">{{ form.bio_length.help_text }}</div>
+                            {% if form.bio_length.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.bio_length.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Follower Count -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.follower_count.id_for_label }}" class="form-label">
+                                <i class="fas fa-users me-1"></i>
+                                Followers
+                            </label>
+                            {{ form.follower_count }}
+                            <div class="form-text">{{ form.follower_count.help_text }}</div>
+                            {% if form.follower_count.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.follower_count.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Following Count -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.following_count.id_for_label }}" class="form-label">
+                                <i class="fas fa-user-plus me-1"></i>
+                                Following
+                            </label>
+                            {{ form.following_count }}
+                            <div class="form-text">{{ form.following_count.help_text }}</div>
+                            {% if form.following_count.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.following_count.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Post Count -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.post_count.id_for_label }}" class="form-label">
+                                <i class="fas fa-image me-1"></i>
+                                Posts
+                            </label>
+                            {{ form.post_count }}
+                            <div class="form-text">{{ form.post_count.help_text }}</div>
+                            {% if form.post_count.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.post_count.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Average Likes -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.avg_likes_per_post.id_for_label }}" class="form-label">
+                                <i class="fas fa-heart me-1"></i>
+                                Avg. Likes per Post
+                            </label>
+                            {{ form.avg_likes_per_post }}
+                            <div class="form-text">{{ form.avg_likes_per_post.help_text }}</div>
+                            {% if form.avg_likes_per_post.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.avg_likes_per_post.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Average Comments -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.avg_comments_per_post.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment me-1"></i>
+                                Avg. Comments per Post
+                            </label>
+                            {{ form.avg_comments_per_post }}
+                            <div class="form-text">{{ form.avg_comments_per_post.help_text }}</div>
+                            {% if form.avg_comments_per_post.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.avg_comments_per_post.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Profile Features -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.has_profile_pic }}
+                                <label class="form-check-label" for="{{ form.has_profile_pic.id_for_label }}">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    {{ form.has_profile_pic.label }}
+                                </label>
+                            </div>
+                            <div class="form-text">{{ form.has_profile_pic.help_text }}</div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.has_external_url }}
+                                <label class="form-check-label" for="{{ form.has_external_url.id_for_label }}">
+                                    <i class="fas fa-external-link-alt me-1"></i>
+                                    {{ form.has_external_url.label }}
+                                </label>
+                            </div>
+                            <div class="form-text">{{ form.has_external_url.help_text }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{% url 'index' %}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Home
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="submitSpinner" class="spinner-border spinner-border-sm me-2" style="display: none;"></span>
+                            <i class="fas fa-search me-2" id="submitIcon"></i>
+                            Analyze Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-question-circle me-2"></i>
+                    How to Fill This Form
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Required Metrics:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Username (without @)</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Follower count</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Following count</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Total posts</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Engagement Data:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-info text-info me-2"></i>Average likes per post</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Average comments per post</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Bio character count</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Profile features</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('manualForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitSpinner = document.getElementById('submitSpinner');
+    const submitIcon = document.getElementById('submitIcon');
+
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitSpinner.style.display = 'inline-block';
+            submitIcon.style.display = 'none';
+            submitBtn.innerHTML = submitBtn.innerHTML.replace('Analyze Account', 'Analyzing...');
+        }
+        
+        form.classList.add('was-validated');
+    });
+
+    // Add real-time validation feedback
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.checkValidity()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

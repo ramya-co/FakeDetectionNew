@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Instagram Fake Account Detection{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            <i class="fab fa-instagram me-3"></i>
+            Instagram Fake Account Detector
+        </h1>
+        <p class="lead text-muted mb-4">
+            Detect fake Instagram accounts using advanced machine learning with explainable AI
+        </p>
+        <div class="badge bg-secondary mb-4">
+            <i class="fas fa-robot me-1"></i>
+            Powered by XGBoost & SHAP
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="row g-4">
+            <!-- Manual Input Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="analysis-card card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="analysis-icon mb-3">
+                            <i class="fas fa-keyboard fa-3x text-primary"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Manual Input Analysis</h4>
+                        <p class="card-text text-muted mb-4">
+                            Enter account details manually for analysis. Perfect when you have specific metrics or want to test hypothetical scenarios.
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Full control over inputs</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>No rate limiting issues</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Instant analysis</small>
+                            </div>
+                        </div>
+                        <a href="{% url 'manual_form' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-edit me-2"></i>
+                            Start Manual Analysis
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- URL Scraping Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="analysis-card card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="analysis-icon mb-3">
+                            <i class="fas fa-link fa-3x text-success"></i>
+                        </div>
+                        <h4 class="card-title mb-3">URL Scraping Analysis</h4>
+                        <p class="card-text text-muted mb-4">
+                            Simply provide an Instagram URL and let our system automatically gather and analyze the account data.
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Automatic data collection</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Real-time Instagram data</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                <small>Subject to Instagram limits</small>
+                            </div>
+                        </div>
+                        <a href="{% url 'url_form' %}" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-globe me-2"></i>
+                            Start URL Analysis
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW: Instagram Simulation Card -->
+            <div class="col-lg-4 col-md-12" style="display: none;">
+                <div class="analysis-card card h-100 shadow-sm border-0 position-relative">
+                    <div class="card-body text-center p-4">
+                        <div class="analysis-icon mb-3">
+                            <i class="fas fa-users fa-3x text-warning"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Instagram Simulation</h4>
+                        <div class="badge bg-warning text-dark mb-3">
+                            <i class="fas fa-star me-1"></i>
+                            NEW!
+                        </div>
+                        <p class="card-text text-muted mb-4">
+                            Create a simulated Instagram account and interact naturally. We'll analyze your behavior in real-time with automatic predictions.
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Real-time behavior analysis</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Interactive Instagram clone</small>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Live analytics dashboard</small>
+                            </div>
+                        </div>
+                        <a href="{% url 'simulation:intro' %}" class="btn btn-warning btn-lg w-100 text-dark">
+                            <i class="fas fa-play me-2"></i>
+                            Enter Simulation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="how-it-works mt-5 py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="step-number">1</div>
+                <h5>Data Collection</h5>
+                <p class="text-muted">
+                    Gather account metrics like followers, posts, engagement rates, and profile features.
+                </p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="step-number">2</div>
+                <h5>AI Analysis</h5>
+                <p class="text-muted">
+                    Our XGBoost model analyzes patterns to determine if an account is likely fake or real.
+                </p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="step-number">3</div>
+                <h5>Explainable Results</h5>
+                <p class="text-muted">
+                    Get detailed explanations using SHAP values showing which features influenced the prediction.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section bg-light py-5 mt-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="feature-card d-flex align-items-start">
+                    <div class="feature-icon me-3">
+                        <i class="fas fa-brain text-primary fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5>Advanced Machine Learning</h5>
+                        <p class="text-muted mb-0">
+                            Trained XGBoost model with high accuracy on fake account detection.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="feature-card d-flex align-items-start">
+                    <div class="feature-icon me-3">
+                        <i class="fas fa-chart-line text-success fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5>Explainable AI</h5>
+                        <p class="text-muted mb-0">
+                            SHAP explanations show exactly why a prediction was made.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="feature-card d-flex align-items-start">
+                    <div class="feature-icon me-3">
+                        <i class="fas fa-history text-info fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5>Analysis History</h5>
+                        <p class="text-muted mb-0">
+                            Keep track of all your analyses with detailed history records.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="feature-card d-flex align-items-start">
+                    <div class="feature-icon me-3">
+                        <i class="fas fa-mobile-alt text-warning fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5>Mobile Friendly</h5>
+                        <p class="text-muted mb-0">
+                            Responsive design works perfectly on all devices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Warning Section -->
+<div class="warning-section mt-5">
+    <div class="container">
+        <div class="alert alert-info" role="alert">
+            <h5 class="alert-heading">
+                <i class="fas fa-info-circle me-2"></i>
+                Important Notice
+            </h5>
+            <p class="mb-0">
+                This tool provides AI-based predictions for educational and research purposes. 
+                Results should not be used as the sole basis for important decisions. 
+                Instagram's rate limiting may affect URL scraping functionality.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

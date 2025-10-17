@@ -1,0 +1,688 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard - Instagram Simulation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .stat-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+    
+    .user-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .user-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .user-card.real-account {
+        border-left: 4px solid #10b981;
+    }
+    
+    .user-card.fake-account {
+        border-left: 4px solid #ef4444;
+    }
+    
+    .user-card.pending-account {
+        border-left: 4px solid #6b7280;
+    }
+    
+    .prediction-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge-real {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .badge-fake {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .badge-pending {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+    
+    .confidence-bar {
+        height: 6px;
+        border-radius: 3px;
+        background-color: #e5e7eb;
+        overflow: hidden;
+    }
+    
+    .confidence-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s ease;
+    }
+    
+    .confidence-real {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+    
+    .confidence-fake {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+    
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .last-updated {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .auto-refresh-toggle {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    
+    .auto-refresh-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .filter-tabs {
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-tab {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: none;
+        color: #6b7280;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .filter-tab.active {
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header py-4 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="h3 mb-1">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Simulation Analytics Dashboard
+                </h1>
+                <p class="mb-0 opacity-75">Real-time fake account detection analytics</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end gap-3">
+                    <!-- Auto-refresh toggle -->
+                    <div class="d-flex align-items-center">
+                        <span class="me-2 small">Auto-refresh:</span>
+                        <label class="auto-refresh-toggle">
+                            <input type="checkbox" id="auto-refresh-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <!-- Manual refresh button -->
+                    <button class="btn btn-light btn-sm" id="manual-refresh-btn">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Refresh
+                    </button>
+                    <!-- Back to simulation -->
+                    <a href="{% url 'simulation:intro' %}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Back to Simulation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Last Updated -->
+    <div class="text-center mb-4">
+        <div class="last-updated d-inline-block">
+            <i class="fas fa-clock me-1"></i>
+            Last updated: <span id="last-updated-time">{{ dashboard_data.last_updated|date:'M d, Y H:i:s' }}</span>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-primary" id="total-users">{{ dashboard_data.stats.total_users }}</div>
+                        <div class="text-muted small">Total Users</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users stat-icon text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-success" id="total-real">{{ dashboard_data.stats.total_real }}</div>
+                        <div class="text-muted small">Real Accounts</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle stat-icon text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-danger" id="total-fake">{{ dashboard_data.stats.total_fake }}</div>
+                        <div class="text-muted small">Fake Accounts</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-times-circle stat-icon text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-warning" id="total-pending">{{ dashboard_data.stats.pending }}</div>
+                        <div class="text-muted small">Pending</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock stat-icon text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-info" id="avg-confidence">{{ dashboard_data.stats.avg_confidence|floatformat:1 }}%</div>
+                        <div class="text-muted small">Avg Confidence</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-brain stat-icon text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card stat-card text-center p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="stat-number text-secondary" id="total-interactions">{{ dashboard_data.stats.total_interactions }}</div>
+                        <div class="text-muted small">Total Interactions</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-heart stat-icon text-secondary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart Section -->
+    <div class="row mb-5">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Real vs Fake Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Activity Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All Users</button>
+        <button class="filter-tab" data-filter="real">Real Accounts</button>
+        <button class="filter-tab" data-filter="fake">Fake Accounts</button>
+        <button class="filter-tab" data-filter="pending">Pending Analysis</button>
+    </div>
+    
+    <!-- Sort Options -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Sort by:</span>
+                <select class="form-select form-select-sm" id="sort-select" style="width: auto;">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="confidence_high">Highest Confidence</option>
+                    <option value="confidence_low">Lowest Confidence</option>
+                    <option value="most_active">Most Active</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="search-input" placeholder="Search by username...">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users Grid -->
+    <div class="row" id="users-grid">
+        {% for user in dashboard_data.users %}
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4 user-card-wrapper" 
+             data-filter="{{ user.prediction|lower }}" 
+             data-username="{{ user.username }}"
+             data-confidence="{{ user.confidence_score|default:0 }}"
+             data-created="{{ user.created_at|date:'U' }}">
+            <div class="card user-card {% if user.prediction == 'Real' %}real-account{% elif user.prediction == 'Fake' %}fake-account{% else %}pending-account{% endif %}">
+                <div class="card-body p-3">
+                    <!-- User Header -->
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% if user.profile_pic %}{{ user.profile_pic }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                             alt="{{ user.username }}" class="user-avatar me-3">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 fw-bold">{{ user.username }}</h6>
+                            <span class="prediction-badge {% if user.prediction == 'Real' %}badge-real{% elif user.prediction == 'Fake' %}badge-fake{% else %}badge-pending{% endif %}">
+                                {% if user.prediction == 'Pending' %}
+                                    <i class="fas fa-spinner fa-spin me-1"></i>
+                                {% endif %}
+                                {{ user.prediction }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Confidence Score -->
+                    {% if user.prediction != 'Pending' %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted">Confidence</small>
+                            <small class="fw-bold">{{ user.confidence|floatformat:1 }}%</small>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill {% if user.prediction == 'Real' %}confidence-real{% else %}confidence-fake{% endif %}" 
+                                 style="width: {{ user.confidence }}%;"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Activity Summary -->
+                    <div class="mb-3">
+                        <small class="text-muted d-block">{{ user.activity_summary }}</small>
+                        <small class="text-muted">Active {{ user.last_active|timesince }} ago</small>
+                    </div>
+                    
+                    <!-- View Details Button -->
+                    <div class="d-grid">
+                        <a href="{% url 'simulation:user_detail' user.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h5>No simulated users yet</h5>
+            <p class="text-muted">Start a simulation to see analytics.</p>
+            <a href="{% url 'simulation:intro' %}" class="btn btn-primary">
+                <i class="fas fa-play me-2"></i>
+                Start Simulation
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Auto-refresh functionality
+let autoRefreshEnabled = true;
+let refreshInterval;
+
+// Initialize charts
+let distributionChart;
+let activityChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    startAutoRefresh();
+    setupEventListeners();
+});
+
+function initializeCharts() {
+    // Distribution Chart (Pie Chart)
+    const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+    const chartData = {{ dashboard_data.chart_data|safe }};
+    
+    distributionChart = new Chart(distributionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Real Accounts', 'Fake Accounts', 'Pending Analysis'],
+            datasets: [{
+                data: [
+                    chartData.real_fake_distribution.real,
+                    chartData.real_fake_distribution.fake,
+                    chartData.real_fake_distribution.pending
+                ],
+                backgroundColor: ['#10b981', '#ef4444', '#6b7280'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+    
+    // Activity Chart (Bar Chart)
+    const activityCtx = document.getElementById('activityChart').getContext('2d');
+    activityChart = new Chart(activityCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Posts', 'Interactions'],
+            datasets: [{
+                label: 'Count',
+                data: [{{ dashboard_data.stats.total_posts }}, {{ dashboard_data.stats.total_interactions }}],
+                backgroundColor: ['#3b82f6', '#8b5cf6'],
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function setupEventListeners() {
+    // Auto-refresh toggle
+    document.getElementById('auto-refresh-toggle').addEventListener('change', function() {
+        autoRefreshEnabled = this.checked;
+        if (autoRefreshEnabled) {
+            startAutoRefresh();
+        } else {
+            clearInterval(refreshInterval);
+        }
+    });
+    
+    // Manual refresh
+    document.getElementById('manual-refresh-btn').addEventListener('click', function() {
+        fetchDashboardData();
+    });
+    
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            filterUsers(this.getAttribute('data-filter'));
+        });
+    });
+    
+    // Sort dropdown
+    document.getElementById('sort-select').addEventListener('change', function() {
+        sortUsers(this.value);
+    });
+    
+    // Search input
+    document.getElementById('search-input').addEventListener('input', function() {
+        searchUsers(this.value);
+    });
+}
+
+function startAutoRefresh() {
+    refreshInterval = setInterval(() => {
+        if (autoRefreshEnabled) {
+            fetchDashboardData();
+        }
+    }, 10000); // 10 seconds
+}
+
+function fetchDashboardData() {
+    const refreshBtn = document.getElementById('manual-refresh-btn');
+    const icon = refreshBtn.querySelector('i');
+    
+    // Show loading state
+    icon.classList.add('fa-spin');
+    
+    fetch('{% url "simulation:dashboard_data_api" %}')
+        .then(response => response.json())
+        .then(data => {
+            updateDashboard(data);
+            updateLastUpdatedTime();
+        })
+        .catch(error => {
+            console.error('Error fetching dashboard data:', error);
+        })
+        .finally(() => {
+            icon.classList.remove('fa-spin');
+        });
+}
+
+function updateDashboard(data) {
+    // Update statistics
+    document.getElementById('total-users').textContent = data.stats.total_users;
+    document.getElementById('total-real').textContent = data.stats.total_real;
+    document.getElementById('total-fake').textContent = data.stats.total_fake;
+    document.getElementById('total-pending').textContent = data.stats.pending;
+    document.getElementById('avg-confidence').textContent = data.stats.avg_confidence.toFixed(1) + '%';
+    document.getElementById('total-interactions').textContent = data.stats.total_interactions;
+    
+    // Update charts
+    distributionChart.data.datasets[0].data = [
+        data.chart_data.real_fake_distribution.real,
+        data.chart_data.real_fake_distribution.fake,
+        data.chart_data.real_fake_distribution.pending
+    ];
+    distributionChart.update();
+    
+    activityChart.data.datasets[0].data = [data.stats.total_posts, data.stats.total_interactions];
+    activityChart.update();
+    
+    // Update user cards would require more complex logic
+    // For now, we'll just update the timestamp
+}
+
+function updateLastUpdatedTime() {
+    const now = new Date();
+    document.getElementById('last-updated-time').textContent = now.toLocaleString();
+}
+
+function filterUsers(filter) {
+    const userCards = document.querySelectorAll('.user-card-wrapper');
+    
+    userCards.forEach(card => {
+        const cardFilter = card.getAttribute('data-filter');
+        if (filter === 'all' || cardFilter === filter) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function sortUsers(sortType) {
+    const grid = document.getElementById('users-grid');
+    const cards = Array.from(grid.querySelectorAll('.user-card-wrapper'));
+    
+    cards.sort((a, b) => {
+        switch (sortType) {
+            case 'newest':
+                return parseInt(b.getAttribute('data-created')) - parseInt(a.getAttribute('data-created'));
+            case 'oldest':
+                return parseInt(a.getAttribute('data-created')) - parseInt(b.getAttribute('data-created'));
+            case 'confidence_high':
+                return parseFloat(b.getAttribute('data-confidence')) - parseFloat(a.getAttribute('data-confidence'));
+            case 'confidence_low':
+                return parseFloat(a.getAttribute('data-confidence')) - parseFloat(b.getAttribute('data-confidence'));
+            default:
+                return 0;
+        }
+    });
+    
+    // Re-append sorted cards
+    cards.forEach(card => grid.appendChild(card));
+}
+
+function searchUsers(query) {
+    const userCards = document.querySelectorAll('.user-card-wrapper');
+    const searchLower = query.toLowerCase();
+    
+    userCards.forEach(card => {
+        const username = card.getAttribute('data-username').toLowerCase();
+        if (username.includes(searchLower)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

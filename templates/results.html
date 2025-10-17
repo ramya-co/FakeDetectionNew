@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analysis Results - Instagram Fake Account Detection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Main Results Card -->
+        <div class="card shadow-lg border-0 mb-4">
+            <div class="card-header {% if result.prediction == 'Fake' %}bg-danger{% else %}bg-success{% endif %} text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fab fa-instagram me-2"></i>
+                        Analysis Results for @{{ result.username }}
+                    </h3>
+                    <span class="badge bg-light text-dark">
+                        {{ result.input_method|title }} Input
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <!-- Prediction Result -->
+                <div class="text-center mb-4">
+                    <div class="prediction-result">
+                        <i class="{% if result.prediction == 'Fake' %}fas fa-exclamation-triangle text-danger{% else %}fas fa-check-circle text-success{% endif %} fa-4x mb-3"></i>
+                        <h2 class="{% if result.prediction == 'Fake' %}text-danger{% else %}text-success{% endif %} mb-2">
+                            This account is likely <strong>{{ result.prediction|upper }}</strong>
+                        </h2>
+                        <div class="confidence-display mb-3">
+                            <h4 class="{{ result.confidence_color }}">
+                                Confidence: {{ result.confidence_score|floatformat:1 }}%
+                            </h4>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar {% if result.prediction == 'Fake' %}bg-danger{% else %}bg-success{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ result.confidence_score|floatformat:1 }}%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="risk-level">
+                            <span class="badge {% if 'High' in result.risk_level %}bg-danger{% elif 'Medium' in result.risk_level %}bg-warning{% else %}bg-success{% endif %} fs-6">
+                                Risk Level: {{ result.risk_level }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHAP Explanation -->
+        {% if result.feature_summaries %}
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Why This Prediction? (AI Explanation)
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    These are the top factors that influenced our AI model's decision:
+                </p>
+                <div class="shap-explanation">
+                    {% for summary in result.feature_summaries %}
+                    <div class="feature-explanation d-flex align-items-center mb-3">
+                        <div class="feature-impact me-3">
+                            {% if 'increases' in summary %}
+                                <i class="fas fa-arrow-up text-danger fa-lg"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-success fa-lg"></i>
+                            {% endif %}
+                        </div>
+                        <div class="feature-description flex-grow-1">
+                            <strong>{{ summary|capfirst }}</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- SHAP Values Chart -->
+                <div class="mt-4">
+                    <canvas id="shapChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Account Details -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Account Details
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><i class="fas fa-users text-primary me-2"></i><strong>Followers:</strong></td>
+                                <td>{{ result.features.follower_count|floatformat:0 }}</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-user-plus text-info me-2"></i><strong>Following:</strong></td>
+                                <td>{{ result.features.following_count|floatformat:0 }}</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-image text-success me-2"></i><strong>Posts:</strong></td>
+                                <td>{{ result.features.post_count|floatformat:0 }}</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-align-left text-warning me-2"></i><strong>Bio Length:</strong></td>
+                                <td>{{ result.features.bio_length|floatformat:0 }} characters</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><i class="fas fa-heart text-danger me-2"></i><strong>Avg. Likes:</strong></td>
+                                <td>{{ result.features.avg_likes_per_post|floatformat:1 }}</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-comment text-primary me-2"></i><strong>Avg. Comments:</strong></td>
+                                <td>{{ result.features.avg_comments_per_post|floatformat:1 }}</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-chart-line text-info me-2"></i><strong>Engagement Rate:</strong></td>
+                                <td>{{ result.features.engagement_rate|floatformat:2 }}%</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-balance-scale text-secondary me-2"></i><strong>Follower/Following Ratio:</strong></td>
+                                <td>{{ result.features.follower_following_ratio|floatformat:2 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Profile Features -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6 class="text-muted mb-2">Profile Features:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge {% if result.features.has_profile_pic %}bg-success{% else %}bg-secondary{% endif %}">
+                                <i class="fas fa-user-circle me-1"></i>
+                                {% if result.features.has_profile_pic %}Has Profile Picture{% else %}No Profile Picture{% endif %}
+                            </span>
+                            <span class="badge {% if result.features.has_external_url %}bg-success{% else %}bg-secondary{% endif %}">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                {% if result.features.has_external_url %}Has External URL{% else %}No External URL{% endif %}
+                            </span>
+                            <span class="badge {% if result.features.is_private %}bg-warning{% else %}bg-info{% endif %}">
+                                <i class="fas fa-lock me-1"></i>
+                                {% if result.features.is_private %}Private Account{% else %}Public Account{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="d-grid">
+                    <button class="btn btn-outline-primary" onclick="saveAnalysis()">
+                        <i class="fas fa-save me-2"></i>
+                        Save to History
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="d-grid">
+                    <a href="{% url 'index' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Analyze Another Account
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="alert alert-info mt-4" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-info-circle me-2"></i>
+                Disclaimer
+            </h6>
+            <p class="mb-0">
+                This analysis is generated by an AI model and should be used for informational purposes only. 
+                The prediction is based on publicly available metrics and patterns, but should not be considered 
+                as definitive proof of account authenticity.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// SHAP Values Chart
+{% if result.shap_explanation.top_features %}
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('shapChart').getContext('2d');
+    
+    const features = JSON.parse('{{ result.shap_explanation.top_features|escapejs }}');
+    const labels = features.map(f => f.feature.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+    const values = features.map(f => f.importance);
+    const colors = values.map(v => v > 0 ? 'rgba(220, 53, 69, 0.8)' : 'rgba(25, 135, 84, 0.8)');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Feature Importance',
+                data: values,
+                backgroundColor: colors,
+                borderColor: colors.map(c => c.replace('0.8', '1')),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Feature Importance (SHAP Values)'
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Importance Value'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Features'
+                    }
+                }
+            }
+        }
+    });
+});
+{% endif %}
+
+// Save analysis function
+function saveAnalysis() {
+    fetch('{% url "save_analysis" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Analysis saved to history successfully!', 'success');
+        } else {
+            showAlert('Failed to save analysis: ' + data.error, 'danger');
+        }
+    })
+    .catch(error => {
+        showAlert('Error saving analysis: ' + error, 'danger');
+    });
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('main.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

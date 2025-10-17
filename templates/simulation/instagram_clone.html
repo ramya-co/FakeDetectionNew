@@ -1,0 +1,536 @@
+{% extends 'simulation/base_instagram.html' %}
+{% load static %}
+
+{% block title %}Instagram{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/instagram.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- CSRF Token for AJAX -->
+{% csrf_token %}
+
+<!-- Error Messages -->
+{% if error %}
+<div class="alert alert-error" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #ed4956; color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px;">
+    {{ error }}
+</div>
+{% endif %}
+
+<!-- Instagram Navigation -->
+<nav class="instagram-nav">
+    <div class="nav-container">
+        <!-- Left: Logo -->
+        <a href="{% url 'simulation:instagram_clone' %}" class="instagram-logo">
+            Instagram
+        </a>
+        
+        <!-- Center: Search -->
+        <input type="text" class="instagram-search" placeholder="Search">
+        
+        <!-- Right: Navigation Icons -->
+        <div class="nav-icons">
+            <a href="{% url 'simulation:instagram_clone' %}" class="nav-icon">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="#" class="nav-icon">
+                <i class="far fa-paper-plane"></i>
+            </a>
+            <a href="#" class="nav-icon" onclick="openCreateModal()">
+                <i class="far fa-plus-square"></i>
+            </a>
+            <a href="#" class="nav-icon">
+                <i class="far fa-compass"></i>
+            </a>
+            <a href="#" class="nav-icon">
+                <i class="far fa-heart"></i>
+            </a>
+            <a href="{% url 'simulation:user_profile' %}" class="nav-icon">
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="profile-pic-nav">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.svg' %}" alt="{{ user.username }}" class="profile-pic-nav">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content Layout -->
+<div class="instagram-main">
+    <!-- Feed Column -->
+    <div class="feed-column">
+        {% for post in posts %}
+        <article class="post-card" data-post-id="{{ post.id }}">
+            <!-- Post Header -->
+            <header class="post-header">
+                <img src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}" 
+                     alt="{{ post.user.username }}" class="post-avatar">
+                <a href="#" class="post-username">{{ post.user.username }}</a>
+                {% if post.location %}
+                <span class="post-time">• {{ post.location }}</span>
+                {% endif %}
+                <span class="post-menu">⋯</span>
+            </header>
+            
+            <!-- Post Image -->
+            <div style="position: relative;">
+                <img src="{{ post.image.url }}" alt="Post by {{ post.user.username }}" class="post-image" ondblclick="doubleTapLike({{ post.id }})">
+            </div>
+            
+            <!-- Post Actions -->
+            <div class="post-actions">
+                <div class="action-buttons">
+                    <button class="action-icon like-icon {% if post.user_liked %}liked{% endif %}" data-post-id="{{ post.id }}" onclick="toggleLike({{ post.id }})">
+                        <i class="{% if post.user_liked %}fas{% else %}far{% endif %} fa-heart"></i>
+                    </button>
+                    <button class="action-icon" onclick="focusComment({{ post.id }})">
+                        <i class="far fa-comment"></i>
+                    </button>
+                    <button class="action-icon">
+                        <i class="far fa-paper-plane"></i>
+                    </button>
+                </div>
+                <button class="action-icon">
+                    <i class="far fa-bookmark"></i>
+                </button>
+            </div>
+            
+            <!-- Likes Count -->
+            <div class="post-likes">
+                <span class="likes-count-{{ post.id }}">{{ post.likes_count }}</span> likes
+            </div>
+            
+            <!-- Caption -->
+            {% if post.caption %}
+            <div class="post-caption">
+                <span class="caption-username">{{ post.user.username }}</span>
+                <span class="caption-text">{{ post.caption }}</span>
+            </div>
+            {% endif %}
+            
+            <!-- Comments -->
+            <div class="post-comments">
+                {% if post.comments_count > 3 %}
+                <a href="#" class="view-comments">View all {{ post.comments_count }} comments</a>
+                {% endif %}
+                
+                <div id="comments-{{ post.id }}">
+                    {% for comment in post.comments.all|slice:":3" %}
+                    <div class="comment">
+                        <span class="comment-username">{{ comment.user.username }}</span>
+                        <span class="comment-text">{{ comment.text }}</span>
+                        <span class="comment-time">{{ comment.created_at|timesince }}h</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Post Timestamp -->
+            <div class="post-timestamp">
+                {{ post.created_at|timesince }} ago
+            </div>
+            
+            <!-- Add Comment -->
+            <div class="add-comment">
+                <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}" 
+                     alt="{{ user.username }}" class="comment-avatar">
+                <input type="text" class="comment-input" id="comment-input-{{ post.id }}" placeholder="Add a comment..." onkeyup="toggleCommentButton({{ post.id }})">
+                <button class="comment-submit" id="comment-btn-{{ post.id }}" onclick="submitComment({{ post.id }})">Post</button>
+            </div>
+        </article>
+        {% empty %}
+        <div class="empty-feed">
+            <i class="fas fa-camera"></i>
+            <h3>No posts yet</h3>
+            <p>When you share photos, they'll appear on your profile.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Sidebar Column -->
+    <div class="sidebar-column">
+        <!-- Current User -->
+        <div class="sidebar-user">
+            <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}" 
+                 alt="{{ user.username }}" class="sidebar-avatar">
+            <div class="sidebar-user-info">
+                <h4>{{ user.username }}</h4>
+                <p>{{ user.bio|default:"Welcome to Instagram!" }}</p>
+            </div>
+            <a href="#" class="switch-account">Switch</a>
+        </div>
+        
+        <!-- Suggestions -->
+        <div class="suggestions">
+            <div class="suggestions-header">
+                <h5 class="suggestions-title">Suggestions For You</h5>
+                <a href="#" class="see-all">See All</a>
+            </div>
+            
+            <!-- Sample suggestions (you can make these dynamic) -->
+            <div class="suggestion-item">
+                <img src="https://picsum.photos/32/32?random=1" alt="user1" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>photography_pro</h5>
+                    <p>Suggested for you</p>
+                </div>
+                <button class="follow-btn">Follow</button>
+            </div>
+            
+            <div class="suggestion-item">
+                <img src="https://picsum.photos/32/32?random=2" alt="user2" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>travel_blogger</h5>
+                    <p>Follows you</p>
+                </div>
+                <button class="follow-btn">Follow</button>
+            </div>
+            
+            <div class="suggestion-item">
+                <img src="https://picsum.photos/32/32?random=3" alt="user3" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>food_lover</h5>
+                    <p>Suggested for you</p>
+                </div>
+                <button class="follow-btn">Follow</button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <p>
+                <a href="#">About</a> • <a href="#">Help</a> • <a href="#">Press</a> • <a href="#">API</a> • 
+                <a href="#">Jobs</a> • <a href="#">Privacy</a> • <a href="#">Terms</a> • 
+                <a href="#">Locations</a> • <a href="#">Language</a>
+            </p>
+            <p style="margin-top: 16px;">© 2024 INSTAGRAM FROM META</p>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Create Post Button -->
+<button class="create-post-float" onclick="openCreateModal()">
+    <i class="fas fa-plus"></i>
+</button>
+
+<!-- Hidden End Simulation Button -->
+<div style="position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
+    <a href="{% url 'simulation:end_simulation' %}" 
+       style="background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 20px; text-decoration: none; font-size: 12px; opacity: 0.6;">
+        <i class="fas fa-info-circle"></i> End Simulation
+    </a>
+</div>
+
+<!-- Create Post Modal -->
+<div id="create-post-modal" class="create-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create new post</h3>
+            <button class="close-modal" onclick="closeCreateModal()">&times;</button>
+        </div>
+        <form method="post" enctype="multipart/form-data" action="{% url 'simulation:create_post' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-camera"></i>
+                    <p>Drag photos here</p>
+                    <label for="image-upload" class="upload-btn">Select from computer</label>
+                    <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                </div>
+                <div class="image-preview" id="image-preview" style="display: none;">
+                    <img id="preview-img" src="" alt="Preview">
+                </div>
+                <div class="caption-area">
+                    <textarea name="caption" placeholder="Write a caption..." maxlength="2200"></textarea>
+                    <div class="character-count">0/2,200</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="share-btn">Share</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// JavaScript Functions for Instagram Clone
+function openCreateModal() {
+    document.getElementById('create-post-modal').style.display = 'flex';
+}
+
+function closeCreateModal() {
+    document.getElementById('create-post-modal').style.display = 'none';
+    document.getElementById('upload-area').style.display = 'block';
+    document.getElementById('image-preview').style.display = 'none';
+}
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            input.value = '';
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Image size should be less than 10MB');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+            document.getElementById('upload-area').style.display = 'none';
+            document.getElementById('image-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Helper function to get CSRF cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function toggleLike(postId) {
+    const likeBtn = document.querySelector(`[data-post-id="${postId}"].like-icon`);
+    const likesCountEl = document.querySelector(`.likes-count-${postId}`);
+    
+    // Add loading state
+    likeBtn.classList.add('loading');
+    likeBtn.disabled = true;
+    
+    fetch(`/simulation/toggle-like/${postId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const icon = likeBtn.querySelector('i');
+            if (data.liked) {
+                likeBtn.classList.add('liked');
+                icon.className = 'fas fa-heart';
+            } else {
+                likeBtn.classList.remove('liked');
+                icon.className = 'far fa-heart';
+            }
+            likesCountEl.textContent = data.likes_count;
+        }
+    })
+    .catch(error => {
+        console.error('Error toggling like:', error);
+    })
+    .finally(() => {
+        // Remove loading state
+        likeBtn.classList.remove('loading');
+        likeBtn.disabled = false;
+    });
+}
+
+function doubleTapLike(postId) {
+    const likeBtn = document.querySelector(`[data-post-id="${postId}"].like-icon`);
+    const icon = likeBtn.querySelector('i');
+    
+    if (!likeBtn.classList.contains('liked')) {
+        toggleLike(postId);
+        // Show heart animation
+        showHeartAnimation();
+    }
+}
+
+function showHeartAnimation() {
+    // Create floating heart animation
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 60px;
+        z-index: 9999;
+        pointer-events: none;
+        animation: heartBounce 0.8s ease-out forwards;
+    `;
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 800);
+}
+
+function focusComment(postId) {
+    document.getElementById(`comment-input-${postId}`).focus();
+}
+
+function toggleCommentButton(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const btn = document.getElementById(`comment-btn-${postId}`);
+    btn.style.opacity = input.value.trim() ? '1' : '0.3';
+}
+
+function submitComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const submitBtn = document.getElementById(`comment-btn-${postId}`);
+    const text = input.value.trim();
+    
+    if (!text) return;
+    
+    // Add loading state
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Posting...';
+    
+    fetch(`/simulation/add-comment/${postId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({text: text})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.style.animation = 'fadeIn 0.3s ease';
+            newComment.innerHTML = `
+                <span class="comment-username">${data.username}</span>
+                <span class="comment-text">${text}</span>
+                <span class="comment-time">now</span>
+            `;
+            commentsDiv.appendChild(newComment);
+            input.value = '';
+            toggleCommentButton(postId);
+            
+            // Show success animation
+            input.style.borderColor = '#0095f6';
+            setTimeout(() => input.style.borderColor = '', 1000);
+        }
+    })
+    .catch(error => {
+        console.error('Error adding comment:', error);
+        input.style.borderColor = '#ed4956';
+        setTimeout(() => input.style.borderColor = '', 2000);
+    })
+    .finally(() => {
+        // Remove loading state
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
+}
+
+// Character count for caption
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('textarea[name="caption"]');
+    const counter = document.querySelector('.character-count');
+    
+    if (textarea && counter) {
+        textarea.addEventListener('input', function() {
+            counter.textContent = `${this.value.length}/2,200`;
+        });
+    }
+});
+
+// Add CSS for animations and improvements
+const style = document.createElement('style');
+style.textContent = `
+@keyframes heartBounce {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1) translateY(-50px); opacity: 0; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.alert-error {
+    animation: fadeOut 4s ease-out 2s forwards;
+}
+
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #0095f6;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.post-card {
+    transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+    transition: transform 0.2s ease;
+}
+
+.action-icon:hover {
+    transform: scale(1.1);
+}
+
+.like-icon.liked {
+    animation: likeHeart 0.3s ease;
+}
+
+@keyframes likeHeart {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

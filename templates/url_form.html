@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}URL Analysis - Instagram Fake Account Detection{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-link me-2"></i>
+                    URL Scraping Analysis
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">
+                    Enter an Instagram profile URL and we'll automatically gather and analyze the account data.
+                </p>
+
+                <form method="post" id="urlForm" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.instagram_url.id_for_label }}" class="form-label">
+                            <i class="fab fa-instagram me-1"></i>
+                            Instagram Profile URL
+                        </label>
+                        {{ form.instagram_url }}
+                        <div class="form-text">{{ form.instagram_url.help_text }}</div>
+                        {% if form.instagram_url.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.instagram_url.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Progress indicator -->
+                    <div id="progressContainer" class="mb-4" style="display: none;">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="spinner-border text-success me-3" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1" id="progressTitle">Scraping Instagram Profile...</h6>
+                                        <p class="text-muted mb-0" id="progressMessage">
+                                            This may take a few moments. Please don't close this page.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="progress mt-3" style="height: 6px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                         role="progressbar" style="width: 0%" id="progressBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'index' %}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Home
+                        </a>
+                        <button type="submit" class="btn btn-success" id="submitBtn">
+                            <i class="fas fa-globe me-2" id="submitIcon"></i>
+                            Scrape & Analyze
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- URL Format Help -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Supported URL Formats
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">You can use any of these Instagram URL formats:</p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="url-example">
+                            <code>https://www.instagram.com/username/</code>
+                        </div>
+                        <small class="text-success">✓ Standard format</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="url-example">
+                            <code>https://instagram.com/username</code>
+                        </div>
+                        <small class="text-success">✓ Short format</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="alert alert-warning mt-4" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Important Notes
+            </h6>
+            <ul class="mb-0">
+                <li>Scraping may take 10-30 seconds depending on the account</li>
+                <li>Private accounts will have limited data available</li>
+                <li>Instagram may rate limit requests - if scraping fails, try manual input</li>
+                <li>Large accounts with many posts may take longer to analyze</li>
+            </ul>
+        </div>
+
+        <!-- Fallback Option -->
+        <div class="text-center mt-4">
+            <p class="text-muted">Having trouble with URL scraping?</p>
+            <a href="{% url 'manual_form' %}" class="btn btn-outline-primary">
+                <i class="fas fa-keyboard me-2"></i>
+                Try Manual Input Instead
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('urlForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitIcon = document.getElementById('submitIcon');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressTitle = document.getElementById('progressTitle');
+    const progressMessage = document.getElementById('progressMessage');
+    const urlInput = document.getElementById('id_instagram_url');
+
+    // Progress steps
+    const steps = [
+        { progress: 20, title: 'Validating URL...', message: 'Checking Instagram URL format' },
+        { progress: 40, title: 'Connecting to Instagram...', message: 'Establishing connection' },
+        { progress: 60, title: 'Scraping Profile Data...', message: 'Gathering account information' },
+        { progress: 80, title: 'Analyzing Posts...', message: 'Calculating engagement metrics' },
+        { progress: 95, title: 'Running AI Analysis...', message: 'Processing with machine learning model' }
+    ];
+
+    let currentStep = 0;
+
+    function updateProgress() {
+        if (currentStep < steps.length) {
+            const step = steps[currentStep];
+            progressBar.style.width = step.progress + '%';
+            progressTitle.textContent = step.title;
+            progressMessage.textContent = step.message;
+            currentStep++;
+            
+            // Vary timing to make it feel more natural
+            const delay = currentStep === 1 ? 1000 : (currentStep === 2 ? 2000 : 1500);
+            setTimeout(updateProgress, delay);
+        }
+    }
+
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // Show progress
+        submitBtn.disabled = true;
+        submitIcon.className = 'spinner-border spinner-border-sm me-2';
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Scraping...';
+        progressContainer.style.display = 'block';
+        
+        // Start progress animation
+        updateProgress();
+    });
+
+    // URL input validation
+    urlInput.addEventListener('input', function() {
+        const urlPattern = /^https?:\/\/(?:www\.)?instagram\.com\/[a-zA-Z0-9._]{1,30}\/?(\?.*)?$/;
+        if (this.value && urlPattern.test(this.value)) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value) {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+
+    // Auto-correct common URL formats
+    urlInput.addEventListener('blur', function() {
+        let url = this.value.trim();
+        if (url && !url.startsWith('http')) {
+            if (url.includes('instagram.com')) {
+                this.value = 'https://' + url;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

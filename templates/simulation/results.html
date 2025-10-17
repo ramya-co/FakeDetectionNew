@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Simulation Results - Instagram Fake Account Detector{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2><i class="fas fa-chart-line me-2"></i>Instagram Simulation Results</h2>
+                    <p class="mb-0">AI Analysis of @{{ user.username }}'s Behavior</p>
+                </div>
+                
+                <div class="card-body">
+                    <!-- User Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default-avatar.svg' %}" alt="{{ user.username }}" class="rounded-circle mb-3" style="width: 120px; height: 120px;">
+                            {% endif %}
+                            <h4>@{{ user.username }}</h4>
+                            {% if user.bio %}
+                            <p class="text-muted">{{ user.bio }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 bg-light rounded">
+                                        <h3 class="text-primary">{{ user_detail.posts_count|default:"0" }}</h3>
+                                        <p class="mb-0">Posts Created</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 bg-light rounded">
+                                        <h3 class="text-success">{{ user_detail.likes_count|default:"0" }}</h3>
+                                        <p class="mb-0">Likes Given</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 bg-light rounded">
+                                        <h3 class="text-info">{{ user_detail.comments_count|default:"0" }}</h3>
+                                        <p class="mb-0">Comments Made</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <p><strong>Simulation Duration:</strong> {{ user_detail.session_duration|default:"N/A" }}</p>
+                                <p><strong>Activity Level:</strong> 
+                                    {% if user_detail.activity_level == 'high' %}
+                                        <span class="badge bg-success">High</span>
+                                    {% elif user_detail.activity_level == 'medium' %}
+                                        <span class="badge bg-warning">Medium</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Low</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Analysis Results -->
+                    {% if user_detail.latest_prediction %}
+                    <div class="analysis-section">
+                        <h3 class="mb-3"><i class="fas fa-robot me-2"></i>AI Analysis Results</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="prediction-card p-4 rounded border">
+                                    <div class="text-center mb-3">
+                                        <div class="prediction-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle {% if user_detail.latest_prediction.prediction == 'Real' %}bg-success{% else %}bg-danger{% endif %}" style="width: 100px; height: 100px;">
+                                            <h2 class="text-white mb-0">
+                                                {% if user_detail.latest_prediction.prediction == 'Real' %}
+                                                    <i class="fas fa-check"></i>
+                                                {% else %}
+                                                    <i class="fas fa-times"></i>
+                                                {% endif %}
+                                            </h2>
+                                        </div>
+                                        <h4 class="{% if user_detail.latest_prediction.prediction == 'Real' %}text-success{% else %}text-danger{% endif %}">
+                                            {{ user_detail.latest_prediction.prediction }} Account
+                                        </h4>
+                                        <p class="text-muted">Confidence: {{ user_detail.latest_prediction.confidence|floatformat:1 }}%</p>
+                                    </div>
+                                    
+                                    <div class="risk-level">
+                                        <strong>Risk Level:</strong>
+                                        {% if user_detail.latest_prediction.risk_level == 'LOW' %}
+                                            <span class="badge bg-success">{{ user_detail.latest_prediction.risk_level }}</span>
+                                        {% elif user_detail.latest_prediction.risk_level == 'MEDIUM' %}
+                                            <span class="badge bg-warning">{{ user_detail.latest_prediction.risk_level }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ user_detail.latest_prediction.risk_level }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {% if user_detail.latest_prediction.shap_explanation %}
+                                <h5>Key Behavioral Factors:</h5>
+                                <div class="shap-explanation">
+                                    {% for factor in user_detail.latest_prediction.shap_explanation %}
+                                    <div class="factor-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                                        <span>{{ factor.feature }}</span>
+                                        <span class="{% if factor.impact > 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {{ factor.impact|floatformat:3 }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="analysis-section">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No AI analysis available. More activity needed for prediction.
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Behavioral Insights -->
+                    <div class="insights-section mt-4">
+                        <h3 class="mb-3"><i class="fas fa-lightbulb me-2"></i>Behavioral Insights</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="insight-card p-3 border rounded">
+                                    <h5><i class="fas fa-clock text-primary me-2"></i>Activity Pattern</h5>
+                                    <p class="text-muted">Based on your simulation behavior, you showed {{ user_detail.activity_pattern|default:"normal" }} activity patterns typical of authentic users.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="insight-card p-3 border rounded">
+                                    <h5><i class="fas fa-users text-success me-2"></i>Engagement Style</h5>
+                                    <p class="text-muted">Your interaction patterns suggest {{ user_detail.engagement_style|default:"organic" }} engagement behavior.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <a href="{% url 'simulation:dashboard' %}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-chart-bar me-2"></i>View Full Analytics
+                        </a>
+                        <a href="{% url 'simulation:intro' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-redo me-2"></i>Run New Simulation
+                        </a>
+                        <a href="{% url 'detector:index' %}" class="btn btn-outline-primary btn-lg ms-3">
+                            <i class="fas fa-home me-2"></i>Back to Main Site
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card {
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.prediction-circle {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.analysis-section {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.prediction-card {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.factor-item:last-child {
+    border-bottom: none !important;
+}
+
+.insight-card {
+    height: 100%;
+    transition: box-shadow 0.2s;
+}
+
+.insight-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.shap-explanation {
+    max-height: 300px;
+    overflow-y: auto;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Simulation Account - Instagram Fake Account Detection{% endblock %}
+
+{% block extra_css %}
+<style>
+    .create-account-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .account-form-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .profile-pic-preview {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #dee2e6;
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+    
+    .file-input-wrapper input[type=file] {
+        position: absolute;
+        left: -9999px;
+    }
+    
+    .instagram-style {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    .form-control:focus {
+        border-color: #405de6;
+        box-shadow: 0 0 0 0.2rem rgba(64, 93, 230, 0.25);
+    }
+    
+    .instagram-button {
+        background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .instagram-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="create-account-hero py-4 mb-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="h2 fw-bold mb-2">
+                    <i class="fab fa-instagram me-2"></i>
+                    Create Your Simulation Account
+                </h1>
+                <p class="mb-0">
+                    Set up your profile for the Instagram simulation experience
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="account-form-card card">
+                <div class="card-body p-5 instagram-style">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data" id="create-account-form">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            <div class="mb-3">
+                                <img id="profile-pic-preview" 
+                                     src="{% static 'images/default-avatar.png' %}" 
+                                     alt="Profile Picture" 
+                                     class="profile-pic-preview">
+                            </div>
+                            <div class="file-input-wrapper">
+                                <label for="profile_picture" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-camera me-1"></i>
+                                    Choose Photo
+                                </label>
+                                <input type="file" 
+                                       id="profile_picture" 
+                                       name="profile_picture" 
+                                       accept="image/*" 
+                                       onchange="previewImage(this)">
+                            </div>
+                            <small class="text-muted d-block mt-1">Optional • JPG, PNG up to 5MB</small>
+                        </div>
+                        
+                        <!-- Username -->
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-semibold">
+                                <i class="fas fa-user me-2 text-primary"></i>
+                                Username *
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="username" 
+                                   name="username" 
+                                   required 
+                                   maxlength="150"
+                                   placeholder="Enter your username">
+                            <small class="text-muted">Choose a unique username for your simulation account</small>
+                        </div>
+                        
+                        <!-- Bio -->
+                        <div class="mb-4">
+                            <label for="bio" class="form-label fw-semibold">
+                                <i class="fas fa-align-left me-2 text-success"></i>
+                                Bio
+                            </label>
+                            <textarea class="form-control" 
+                                      id="bio" 
+                                      name="bio" 
+                                      rows="3" 
+                                      maxlength="2200"
+                                      placeholder="Tell us about yourself... (optional)"></textarea>
+                            <small class="text-muted">
+                                <span id="bio-count">0</span>/2200 characters
+                            </small>
+                        </div>
+                        
+                        <!-- External URL -->
+                        <div class="mb-4">
+                            <label for="external_url" class="form-label fw-semibold">
+                                <i class="fas fa-link me-2 text-info"></i>
+                                Website
+                            </label>
+                            <input type="url" 
+                                   class="form-control" 
+                                   id="external_url" 
+                                   name="external_url" 
+                                   placeholder="https://your-website.com (optional)">
+                            <small class="text-muted">Add your website or social media link</small>
+                        </div>
+                        
+                        <!-- Info Box -->
+                        <div class="alert alert-info" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>
+                                How it works:
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>Complete your profile and start interacting in the Instagram clone</li>
+                                <li>Our AI will analyze your behavior patterns automatically</li>
+                                <li>Get real-time predictions as you use the platform</li>
+                                <li>View detailed explanations of why you were classified as real or fake</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn instagram-button btn-lg py-3">
+                                <i class="fas fa-rocket me-2"></i>
+                                Create Account & Start Simulation
+                            </button>
+                        </div>
+                        
+                        <!-- Back Link -->
+                        <div class="text-center">
+                            <a href="{% url 'simulation:intro' %}" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>
+                                Back to Simulation Intro
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-pic-preview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Bio character counter
+document.getElementById('bio').addEventListener('input', function() {
+    const bioCount = document.getElementById('bio-count');
+    bioCount.textContent = this.value.length;
+});
+
+// Form validation
+document.getElementById('create-account-form').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value.trim();
+    if (!username) {
+        e.preventDefault();
+        alert('Username is required!');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Your Account...';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

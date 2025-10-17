@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Instagram Simulation - Fake Account Detection{% endblock %}
+
+{% block extra_css %}
+<style>
+    .simulation-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .simulation-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .simulation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .simulation-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .analytics-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #dee2e6 20%, #dee2e6 80%, transparent 100%);
+        margin: 3rem 0;
+    }
+    
+    .feature-badge {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="simulation-hero py-5 mb-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fab fa-instagram me-3"></i>
+                    Instagram Simulation
+                </h1>
+                <p class="lead mb-4">
+                    Experience behavioral analysis through our interactive Instagram clone. 
+                    Create an account, post photos, like and comment on posts, while our AI 
+                    analyzes your behavior in real-time.
+                </p>
+                <div class="badge bg-light text-dark fs-6 mb-4">
+                    <i class="fas fa-robot me-2"></i>
+                    Powered by Real-Time ML Analysis
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Main Section: Start Simulation -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="simulation-card card shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="simulation-icon">
+                        <i class="fas fa-play fa-2x text-white"></i>
+                    </div>
+                    <h2 class="card-title mb-3">Start Instagram Simulation</h2>
+                    <p class="card-text text-muted mb-4 fs-5">
+                        Create a simulated Instagram account and interact naturally. We'll analyze your behavior 
+                        to determine if it resembles a real or fake account pattern.
+                    </p>
+                    
+                    <!-- Features -->
+                    <div class="mb-4">
+                        <span class="feature-badge">📸 Post Photos</span>
+                        <span class="feature-badge">❤️ Like Posts</span>
+                        <span class="feature-badge">💬 Write Comments</span>
+                        <span class="feature-badge">👤 Customize Profile</span>
+                        <span class="feature-badge">🔍 Real-time Analysis</span>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'simulation:create_account' %}" class="btn btn-primary btn-lg py-3">
+                            <i class="fas fa-rocket me-2"></i>
+                            Create Account & Start Simulation
+                        </a>
+                        <small class="text-muted mt-2">
+                            <i class="fas fa-clock me-1"></i>
+                            Takes 5-10 minutes • Automatic analysis after activity threshold
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Secondary Section: Analytics Dashboard -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="simulation-card card shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="analytics-icon">
+                        <i class="fas fa-chart-line fa-2x text-white"></i>
+                    </div>
+                    <h2 class="card-title mb-3">Analytics Dashboard</h2>
+                    <p class="card-text text-muted mb-4 fs-5">
+                        View real-time predictions and analytics for all users in the simulation. 
+                        See how the AI classifies different behavior patterns.
+                    </p>
+                    
+                    <!-- Dashboard Features -->
+                    <div class="row text-start mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-users text-primary me-2"></i>
+                                <span>All simulated users</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-chart-pie text-success me-2"></i>
+                                <span>Real vs Fake distribution</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-brain text-warning me-2"></i>
+                                <span>SHAP explanations</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-sync text-info me-2"></i>
+                                <span>Real-time updates</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-search text-secondary me-2"></i>
+                                <span>Detailed user analysis</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-history text-dark me-2"></i>
+                                <span>Prediction history</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'simulation:dashboard' %}" class="btn btn-outline-primary btn-lg py-3">
+                            <i class="fas fa-analytics me-2"></i>
+                            View Analytics Dashboard
+                        </a>
+                        <small class="text-muted mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Monitor all simulation activity and predictions
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="mt-5 py-5">
+        <h2 class="text-center mb-5">How the Simulation Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">1</span>
+                </div>
+                <h5>Create Account</h5>
+                <p class="text-muted small">
+                    Set up your simulated Instagram profile with username, bio, and photo.
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">2</span>
+                </div>
+                <h5>Interact Naturally</h5>
+                <p class="text-muted small">
+                    Post photos, like content, write comments - behave as you normally would.
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">3</span>
+                </div>
+                <h5>AI Analysis</h5>
+                <p class="text-muted small">
+                    Our ML model automatically analyzes your behavior patterns in real-time.
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-info text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">4</span>
+                </div>
+                <h5>View Results</h5>
+                <p class="text-muted small">
+                    See your classification and detailed explanations of the AI's decision.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-5 py-4">
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
