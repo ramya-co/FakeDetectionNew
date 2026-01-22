@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Multi-Platform Fake Account Detection{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">
+            <i class="fas fa-shield-alt me-3"></i>
+            Fake Account Detector
+        </h1>
+        <p class="lead mb-4" style="font-size: 1.3rem;">
+            Detect fake accounts across Instagram, Twitter, and Facebook using advanced machine learning with explainable AI
+        </p>
+        <div class="badge bg-light text-dark mb-4" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
+            <i class="fas fa-robot me-2"></i>
+            Powered by XGBoost & SHAP
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-3">Choose Your Platform</h2>
+        <p class="text-muted">Select the social media platform you want to analyze</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+        <!-- Instagram Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="platform-card card h-100 shadow-lg border-0 hover-lift" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s;">
+                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);">
+                    <i class="fab fa-instagram fa-4x mb-3"></i>
+                    <h3 class="mb-0">Instagram</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text text-muted mb-4">
+                        Analyze Instagram accounts for authenticity using profile metrics and engagement patterns.
+                    </p>
+                    <div class="features-list mb-4">
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Profile analysis</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Engagement metrics</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>SHAP explanations</small>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'instagram_manual' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-keyboard me-2"></i>
+                            Manual Input
+                        </a>
+                        <a href="{% url 'instagram_url' %}" class="btn btn-primary">
+                            <i class="fas fa-link me-2"></i>
+                            URL Scraping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Twitter Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="platform-card card h-100 shadow-lg border-0 hover-lift" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s;">
+                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%);">
+                    <i class="fab fa-twitter fa-4x mb-3"></i>
+                    <h3 class="mb-0">Twitter / X</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text text-muted mb-4">
+                        Detect bot and fake Twitter accounts using tweet patterns and follower analysis.
+                    </p>
+                    <div class="features-list mb-4">
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-info me-2"></i>
+                            <small>Tweet analysis</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-info me-2"></i>
+                            <small>Bot detection</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-info me-2"></i>
+                            <small>AI-powered insights</small>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'twitter_manual' %}" class="btn btn-outline-info">
+                            <i class="fas fa-keyboard me-2"></i>
+                            Manual Input
+                        </a>
+                        <a href="{% url 'twitter_url' %}" class="btn btn-info">
+                            <i class="fas fa-link me-2"></i>
+                            URL Scraping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Facebook Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="platform-card card h-100 shadow-lg border-0 hover-lift" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s;">
+                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1877F2 0%, #0d5dbf 100%);">
+                    <i class="fab fa-facebook fa-4x mb-3"></i>
+                    <h3 class="mb-0">Facebook</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text text-muted mb-4">
+                        Identify fake Facebook profiles and clone accounts using friendship patterns.
+                    </p>
+                    <div class="features-list mb-4">
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            <small>Profile verification</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            <small>Clone detection</small>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            <small>Detailed reports</small>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'facebook_manual' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-keyboard me-2"></i>
+                            Manual Input
+                        </a>
+                        <a href="{% url 'facebook_url' %}" class="btn btn-primary">
+                            <i class="fas fa-link me-2"></i>
+                            URL Scraping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="mt-5 pt-5">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="feature-box p-4">
+                    <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                    <h5>XGBoost ML</h5>
+                    <p class="text-muted small">State-of-the-art machine learning for accurate predictions</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-box p-4">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5>SHAP Explanations</h5>
+                    <p class="text-muted small">Understand why accounts are classified as fake</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-box p-4">
+                    <i class="fas fa-shield-check fa-3x text-info mb-3"></i>
+                    <h5>High Accuracy</h5>
+                    <p class="text-muted small">Trained on thousands of real and fake accounts</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-box p-4">
+                    <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                    <h5>Real-time Analysis</h5>
+                    <p class="text-muted small">Get instant results with detailed breakdowns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-lift:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+}
+
+.platform-card {
+    transition: all 0.3s ease;
+}
+
+.feature-box {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+}
+
+.feature-box:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}

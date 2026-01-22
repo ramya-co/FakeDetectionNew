@@ -203,7 +203,7 @@ def get_confidence_color(confidence: float, prediction: str) -> str:
             return "text-warning"  # Orange for low confidence real
 
 
-def log_analysis_attempt(username: str, method: str, success: bool, error: str = None):
+def log_analysis_attempt(username: str, method: str, success: bool, error: str = None, platform: str = 'instagram'):
     """
     Log analysis attempt for debugging and monitoring.
     
@@ -212,13 +212,14 @@ def log_analysis_attempt(username: str, method: str, success: bool, error: str =
         method: Analysis method ('manual' or 'scraped')
         success: Whether analysis was successful
         error: Error message if unsuccessful
+        platform: Social media platform ('instagram', 'twitter', 'facebook')
     """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     if success:
-        logger.info(f"[{timestamp}] Analysis successful - Username: {username}, Method: {method}")
+        logger.info(f"[{timestamp}] [{platform.upper()}] Analysis successful - Username: {username}, Method: {method}")
     else:
-        logger.error(f"[{timestamp}] Analysis failed - Username: {username}, Method: {method}, Error: {error}")
+        logger.error(f"[{timestamp}] [{platform.upper()}] Analysis failed - Username: {username}, Method: {method}, Error: {error}")
 
 
 def sanitize_shap_data(shap_explanation: Dict[str, Any]) -> Dict[str, Any]:

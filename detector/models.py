@@ -1,5 +1,5 @@
 """
-Django models for Instagram fake account detection.
+Django models for multi-platform fake account detection.
 """
 from django.db import models
 from django.utils import timezone
@@ -7,7 +7,14 @@ import json
 
 
 class AnalysisHistory(models.Model):
-    """Model to store analysis history for Instagram accounts."""
+    """Model to store analysis history for social media accounts across platforms."""
+    
+    # Platform choices
+    PLATFORM_CHOICES = [
+        ('instagram', 'Instagram'),
+        ('twitter', 'Twitter/X'),
+        ('facebook', 'Facebook'),
+    ]
     
     # Input method choices
     INPUT_METHOD_CHOICES = [
@@ -21,8 +28,17 @@ class AnalysisHistory(models.Model):
         ('Fake', 'Fake Account'),
     ]
     
+    # Platform identifier
+    platform = models.CharField(
+        max_length=20,
+        choices=PLATFORM_CHOICES,
+        default='instagram',
+        help_text="Social media platform"
+    )
+    
     # Basic info
-    username = models.CharField(max_length=255, help_text="Instagram username")
+    username = models.CharField(max_length=255, help_text="Social media username")
+    profile_url = models.URLField(max_length=500, blank=True, null=True, help_text="Profile URL")
     input_method = models.CharField(
         max_length=10, 
         choices=INPUT_METHOD_CHOICES,
@@ -66,9 +82,13 @@ class AnalysisHistory(models.Model):
         ordering = ['-created_at']
         verbose_name = "Analysis History"
         verbose_name_plural = "Analysis Histories"
+        indexes = [
+            models.Index(fields=['platform', '-created_at']),
+            models.Index(fields=['username']),
+        ]
     
     def __str__(self):
-        return f"{self.username} - {self.prediction} ({self.confidence_score:.2%})"
+        return f"[{self.platform.upper()}] {self.username} - {self.prediction} ({self.confidence_score:.2%})"
     
     def get_top_shap_features(self, limit=5):
         """Get top SHAP features influencing the prediction."""

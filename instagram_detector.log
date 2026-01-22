@@ -459,3 +459,17 @@ Feature names loaded successfully
 SHAP explainer initialized successfully
 Prediction: Real, Confidence: 0.9938
 [2025-10-10 03:17:21] Analysis successful - Username: pujakumaravelu, Method: scraped
+INSTAGRAM XGBoost model loaded successfully
+Error loading instagram model artifacts: Scaler file not found: ml_model/instagram_scaler.pkl
+Failed to load ML model in SimulationAnalyzer: Scaler file not found: ml_model/instagram_scaler.pkl
+INSTAGRAM XGBoost model loaded successfully
+Error loading instagram model artifacts: Scaler file not found: ml_model/instagram_scaler.pkl
+Failed to load ML model in SimulationAnalyzer: Scaler file not found: ml_model/instagram_scaler.pkl
+INSTAGRAM XGBoost model loaded successfully
+Error loading instagram model artifacts: Scaler file not found: ml_model/instagram_scaler.pkl
+Failed to load ML model in SimulationAnalyzer: Scaler file not found: ml_model/instagram_scaler.pkl
+INSTAGRAM XGBoost model loaded successfully
+INSTAGRAM scaler loaded successfully
+INSTAGRAM feature names loaded successfully
+INSTAGRAM SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer

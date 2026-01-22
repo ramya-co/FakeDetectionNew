@@ -1,5 +1,5 @@
 """
-Django views for Instagram fake account detection.
+Django views for multi-platform fake account detection.
 """
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -11,11 +11,15 @@ from django.views import View
 import json
 import logging
 
-from .forms import ManualInputForm, URLInputForm
+from .forms import (
+    ManualInputForm, URLInputForm,
+    TwitterManualForm, TwitterURLForm,
+    FacebookManualForm, FacebookURLForm
+)
 from .models import AnalysisHistory
-from .scraper import scrape_instagram_profile
+from .scrapers import scrape_instagram_profile, scrape_twitter_profile, scrape_facebook_profile
 from .feature_engineering import FeatureEngineer
-from .predictor import InstagramPredictor
+from .predictor import analyze_account
 from .utils import (
     validate_feature_data, 
     log_analysis_attempt, 
@@ -28,8 +32,8 @@ logger = logging.getLogger('detector')
 
 
 def index(request):
-    """Homepage view."""
-    return render(request, 'index.html')
+    """Homepage view with platform selection."""
+    return render(request, 'home.html')
 
 
 def manual_form(request):
@@ -155,6 +159,186 @@ def history(request):
     return render(request, 'history.html', {'analyses': analyses})
 
 
+# Twitter views
+def twitter_manual(request):
+    """Twitter manual input form view."""
+    if request.method == 'POST':
+        form = TwitterManualForm(request.POST)
+        if form.is_valid():
+            try:
+                form_data = form.cleaned_data
+                
+                raw_data = {
+                    'username': form_data['username'],
+                    'follower_count': form_data['follower_count'],
+                    'following_count': form_data['following_count'],
+                    'post_count': form_data['post_count'],
+                    'bio_length': form_data['bio_length'],
+                    'has_profile_pic': form_data['has_profile_pic'],
+                    'has_external_url': form_data['has_external_url'],
+                    'avg_likes_per_post': form_data['avg_likes_per_post'],
+                    'avg_comments_per_post': form_data['avg_comments_per_post'],
+                    'is_private': False
+                }
+                
+                result = process_analysis(raw_data, 'manual', platform='twitter')
+                
+                if result['success']:
+                    request.session['analysis_result'] = result['data']
+                    log_analysis_attempt(form_data['username'], 'manual', True, platform='twitter')
+                    return redirect('results')
+                else:
+                    messages.error(request, result['error_message'])
+                    log_analysis_attempt(form_data['username'], 'manual', False, result['error_message'], platform='twitter')
+                    
+            except Exception as e:
+                logger.error(f"Error processing Twitter manual form: {str(e)}")
+                messages.error(request, "An error occurred while processing your request. Please try again.")
+        else:
+            messages.error(request, "Please correct the errors in the form.")
+    else:
+        form = TwitterManualForm()
+    
+    return render(request, 'twitter/manual_form.html', {'form': form})
+
+
+def twitter_url(request):
+    """Twitter URL input form view."""
+    if request.method == 'POST':
+        form = TwitterURLForm(request.POST)
+        if form.is_valid():
+            try:
+                twitter_url = form.cleaned_data['twitter_url']
+                username = form.get_username_from_url()
+                
+                if not username:
+                    messages.error(request, "Could not extract username from URL.")
+                    return render(request, 'twitter/url_form.html', {'form': form})
+                
+                scraped_data = scrape_twitter_profile(username)
+                
+                if scraped_data is None:
+                    messages.error(request, 
+                        "Failed to scrape Twitter profile. This could be due to:\n"
+                        "• Rate limiting from Twitter\n"
+                        "• Private account with limited access\n"
+                        "• Network issues\n\n"
+                        "Please try using the manual input method instead."
+                    )
+                    log_analysis_attempt(username, 'scraped', False, "Scraping failed", platform='twitter')
+                    return render(request, 'twitter/url_form.html', {'form': form})
+                
+                result = process_analysis(scraped_data, 'scraped', platform='twitter')
+                
+                if result['success']:
+                    request.session['analysis_result'] = result['data']
+                    log_analysis_attempt(username, 'scraped', True, platform='twitter')
+                    return redirect('results')
+                else:
+                    messages.error(request, result['error_message'])
+                    log_analysis_attempt(username, 'scraped', False, result['error_message'], platform='twitter')
+                    
+            except Exception as e:
+                logger.error(f"Error processing Twitter URL form: {str(e)}")
+                messages.error(request, "An error occurred while processing your request. Please try again.")
+        else:
+            messages.error(request, "Please enter a valid Twitter URL.")
+    else:
+        form = TwitterURLForm()
+    
+    return render(request, 'twitter/url_form.html', {'form': form})
+
+
+# Facebook views
+def facebook_manual(request):
+    """Facebook manual input form view."""
+    if request.method == 'POST':
+        form = FacebookManualForm(request.POST)
+        if form.is_valid():
+            try:
+                form_data = form.cleaned_data
+                
+                raw_data = {
+                    'username': form_data['username'],
+                    'follower_count': form_data['follower_count'],
+                    'following_count': form_data['following_count'],
+                    'post_count': form_data['post_count'],
+                    'bio_length': form_data['bio_length'],
+                    'has_profile_pic': form_data['has_profile_pic'],
+                    'has_external_url': form_data['has_external_url'],
+                    'avg_likes_per_post': form_data['avg_likes_per_post'],
+                    'avg_comments_per_post': form_data['avg_comments_per_post'],
+                    'is_private': False
+                }
+                
+                result = process_analysis(raw_data, 'manual', platform='facebook')
+                
+                if result['success']:
+                    request.session['analysis_result'] = result['data']
+                    log_analysis_attempt(form_data['username'], 'manual', True, platform='facebook')
+                    return redirect('results')
+                else:
+                    messages.error(request, result['error_message'])
+                    log_analysis_attempt(form_data['username'], 'manual', False, result['error_message'], platform='facebook')
+                    
+            except Exception as e:
+                logger.error(f"Error processing Facebook manual form: {str(e)}")
+                messages.error(request, "An error occurred while processing your request. Please try again.")
+        else:
+            messages.error(request, "Please correct the errors in the form.")
+    else:
+        form = FacebookManualForm()
+    
+    return render(request, 'facebook/manual_form.html', {'form': form})
+
+
+def facebook_url(request):
+    """Facebook URL input form view."""
+    if request.method == 'POST':
+        form = FacebookURLForm(request.POST)
+        if form.is_valid():
+            try:
+                facebook_url = form.cleaned_data['facebook_url']
+                username = form.get_username_from_url()
+                
+                if not username:
+                    messages.error(request, "Could not extract username from URL.")
+                    return render(request, 'facebook/url_form.html', {'form': form})
+                
+                scraped_data = scrape_facebook_profile(username)
+                
+                if scraped_data is None:
+                    messages.error(request, 
+                        "Failed to scrape Facebook profile. This could be due to:\n"
+                        "• Facebook's strict anti-scraping measures\n"
+                        "• Private account with limited access\n"
+                        "• Network issues\n\n"
+                        "Please try using the manual input method instead."
+                    )
+                    log_analysis_attempt(username, 'scraped', False, "Scraping failed", platform='facebook')
+                    return render(request, 'facebook/url_form.html', {'form': form})
+                
+                result = process_analysis(scraped_data, 'scraped', platform='facebook')
+                
+                if result['success']:
+                    request.session['analysis_result'] = result['data']
+                    log_analysis_attempt(username, 'scraped', True, platform='facebook')
+                    return redirect('results')
+                else:
+                    messages.error(request, result['error_message'])
+                    log_analysis_attempt(username, 'scraped', False, result['error_message'], platform='facebook')
+                    
+            except Exception as e:
+                logger.error(f"Error processing Facebook URL form: {str(e)}")
+                messages.error(request, "An error occurred while processing your request. Please try again.")
+        else:
+            messages.error(request, "Please enter a valid Facebook URL.")
+    else:
+        form = FacebookURLForm()
+    
+    return render(request, 'facebook/url_form.html', {'form': form})
+
+
 @require_http_methods(["POST"])
 def save_analysis(request):
     """Save analysis result to history."""
@@ -166,6 +350,7 @@ def save_analysis(request):
         
         # Create AnalysisHistory record
         analysis = AnalysisHistory.objects.create(
+            platform=analysis_result.get('platform', 'instagram'),
             username=analysis_result['username'],
             input_method=analysis_result['input_method'],
             follower_count=analysis_result['features']['follower_count'],
@@ -180,11 +365,11 @@ def save_analysis(request):
             engagement_rate=analysis_result['features']['engagement_rate'],
             is_private=bool(analysis_result['features']['is_private']),
             prediction=analysis_result['prediction'],
-            confidence_score=analysis_result['confidence_score'],
+            confidence_score=analysis_result['confidence_score'] / 100,  # Convert back to 0-1
             shap_explanation=analysis_result['shap_explanation']
         )
         
-        logger.info(f"Saved analysis to history: {analysis.id}")
+        logger.info(f"Saved {analysis.platform} analysis to history: {analysis.id}")
         return JsonResponse({'success': True, 'analysis_id': analysis.id})
         
     except Exception as e:
@@ -192,13 +377,14 @@ def save_analysis(request):
         return JsonResponse({'success': False, 'error': 'Failed to save analysis'})
 
 
-def process_analysis(raw_data: dict, input_method: str) -> dict:
+def process_analysis(raw_data: dict, input_method: str, platform='instagram') -> dict:
     """
-    Process Instagram account analysis.
+    Process social media account analysis for any platform.
     
     Args:
         raw_data: Raw account data (scraped or manual)
         input_method: 'manual' or 'scraped'
+        platform: 'instagram', 'twitter', or 'facebook'
         
     Returns:
         Dictionary with analysis results
@@ -221,9 +407,8 @@ def process_analysis(raw_data: dict, input_method: str) -> dict:
         # Prepare features for model
         feature_array = feature_engineer.prepare_for_model(features)
         
-        # Make prediction using new predictor interface
-        from .predictor import analyze_account
-        prediction_result = analyze_account(features)
+        # Make prediction using platform-specific model
+        prediction_result = analyze_account(features, platform=platform)
         
         # Prepare result
         result = {
@@ -231,6 +416,7 @@ def process_analysis(raw_data: dict, input_method: str) -> dict:
             'data': {
                 'username': cleaned_data['username'],
                 'input_method': input_method,
+                'platform': platform,
                 'prediction': prediction_result['prediction'],
                 'confidence_score': prediction_result['confidence'] * 100,  # Convert to percentage
                 'features': features,
@@ -238,14 +424,17 @@ def process_analysis(raw_data: dict, input_method: str) -> dict:
                     'top_features': [
                         {
                             'feature': feat['feature'],
+                            'feature_display': feat['feature_display'],
+                            'value': feat['value'],
                             'importance': feat['importance'],
-                            'abs_importance': abs(feat['importance'])
+                            'abs_importance': abs(feat['importance']),
+                            'explanation': feat['explanation']
                         }
                         for feat in prediction_result['shap_explanation']
                     ]
                 },
                 'feature_summaries': [
-                    f"{feat['feature']}: {feat['impact']}" 
+                    feat['explanation']
                     for feat in prediction_result['shap_explanation']
                 ],
                 'risk_level': prediction_result['risk_level']
@@ -255,7 +444,7 @@ def process_analysis(raw_data: dict, input_method: str) -> dict:
         return result
         
     except Exception as e:
-        logger.error(f"Error in process_analysis: {str(e)}")
+        logger.error(f"Error in process_analysis for {platform}: {str(e)}")
         return {
             'success': False,
             'error_message': f'Analysis failed: {str(e)}'

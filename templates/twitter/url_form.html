@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Twitter URL Analysis{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <div class="platform-icon mb-3">
+                    <i class="fab fa-twitter fa-3x" style="color: #1DA1F2;"></i>
+                </div>
+                <h2 class="fw-bold">Twitter URL Scraping</h2>
+                <p class="text-muted">Enter a Twitter profile URL to automatically analyze the account</p>
+                <a href="{% url 'twitter_manual' %}" class="btn btn-sm btn-outline-info">
+                    <i class="fas fa-keyboard me-1"></i>
+                    Switch to Manual Input
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%); border-radius: 15px 15px 0 0;">
+                    <h5 class="mb-0">
+                        <i class="fas fa-link me-2"></i>
+                        URL Input Form
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message|safe }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" id="twitterUrlForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.twitter_url.id_for_label }}" class="form-label fw-bold">
+                                <i class="fab fa-twitter me-1"></i>
+                                Twitter Profile URL
+                            </label>
+                            {{ form.twitter_url }}
+                            <small class="form-text text-muted d-block mt-2">
+                                {{ form.twitter_url.help_text }}
+                            </small>
+                            {% if form.twitter_url.errors %}
+                                <div class="text-danger mt-2">{{ form.twitter_url.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> Scraping may be limited due to Twitter's rate limiting and API restrictions. 
+                            If scraping fails, please use the manual input option.
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="fas fa-search me-2"></i>
+                                Scrape & Analyze Account
+                            </button>
+                            <a href="{% url 'index' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Back to Home
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- How it Works -->
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-cog me-2"></i>
+                        How It Works
+                    </h6>
+                    <ol class="small mb-0">
+                        <li>Enter the Twitter profile URL</li>
+                        <li>We automatically scrape profile data (followers, tweets, etc.)</li>
+                        <li>Our XGBoost model analyzes the account</li>
+                        <li>SHAP explanations show why the account was classified</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
