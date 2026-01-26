@@ -473,3 +473,26 @@ INSTAGRAM scaler loaded successfully
 INSTAGRAM feature names loaded successfully
 INSTAGRAM SHAP explainer initialized successfully
 ML model loaded successfully in SimulationAnalyzer
+INSTAGRAM XGBoost model loaded successfully
+INSTAGRAM scaler loaded successfully
+INSTAGRAM feature names loaded successfully
+INSTAGRAM SHAP explainer initialized successfully
+ML model loaded successfully in SimulationAnalyzer
+Starting multi-method scraping for: pujakumaravelu
+Trying Web Scraping (Direct) for pujakumaravelu
+Direct scraping: https://www.instagram.com/pujakumaravelu/
+Using fallback method for pujakumaravelu
+Found bio in meta: 252 Followers, 275 Following, 28 Posts - Puja (@pu...
+Parsing meta content: 252 Followers, 275 Following, 28 Posts - Puja (@pujakumaravelu) on Instagram: "Only happy side"
+Found followers: 252 from meta
+Found following: 275 from meta
+Found posts: 28 from meta
+Extracted: followers=252, following=275, posts=28
+✅ Successfully scraped pujakumaravelu using Web Scraping (Direct)
+Successfully engineered features
+INSTAGRAM XGBoost model loaded successfully
+INSTAGRAM scaler loaded successfully
+INSTAGRAM feature names loaded successfully
+INSTAGRAM SHAP explainer initialized successfully
+[INSTAGRAM] Prediction: Real, Confidence: 0.5010
+[2026-01-23 03:47:37] [INSTAGRAM] Analysis successful - Username: pujakumaravelu, Method: scraped
